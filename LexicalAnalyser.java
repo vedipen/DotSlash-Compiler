@@ -38,11 +38,45 @@ class dotSlash {
 	add("long");
 	add("double");
     }};
+    public static Set<String> tokenUsed = new HashSet<String> ();
     public static void main (String[] args) throws IOException {
         FileInputStream fstream = new FileInputStream("input.c");
         BufferedReader br = new BufferedReader(new InputStreamReader(fstream));
         String input;
         while((input=br.readLine()) != null) {
+            if(!input.contains("(")) {
+                tokenUsed.add("(");
+            }
+            if(!input.contains(")")) {
+                tokenUsed.add(")");
+            }
+            if(!input.contains("{")) {
+                tokenUsed.add("{");
+            }
+            if(!input.contains("}")) {
+                tokenUsed.add("}");
+            }
+            if(!input.contains("<")) {
+                tokenUsed.add("<");
+            }
+            if(!input.contains(">")) {
+                tokenUsed.add(">");
+            }
+            if(!input.contains("#")) {
+                tokenUsed.add("#");
+            }
+            if(!input.contains(";")) {
+                tokenUsed.add(";");
+            }
+            if(!input.contains(",")) {
+                tokenUsed.add(",");
+            }
+            if(!input.contains("+")) {
+                tokenUsed.add("+");
+            }
+            if(!input.contains("\"")) {
+                tokenUsed.add(")");
+            }
             StringTokenizer in = new StringTokenizer(input, "\t(){}<>#;+\"");
             while(in.hasMoreElements()) {
 		String temp=in.nextToken().trim();
@@ -101,6 +135,11 @@ class dotSlash {
             }
             //System.out.println(input);
         }
+        System.out.print("Tokens Used : ");
+        for(String Tused : tokenUsed) {
+            System.out.print(Tused+" ");
+        }
+        System.out.println();
         br.close();
     }
 }
