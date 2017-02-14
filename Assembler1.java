@@ -11,8 +11,8 @@ public class Assembler1 {
 	public static int LTCOUNT=0;
 	public static int LITORGINIT=0;
 	public static int equflag=0;
-	public static String sym;
-	public static String nme;
+	public static char[] sym = new char[20];
+	public static char[] nme = new char[20];
 	public static char[] opd = new char[100];
 	public static void POTGET1() {
         int i=0,count=0,comma=1;
@@ -186,7 +186,7 @@ public class Assembler1 {
 	   }
 	   len=(length+"").toCharArray();
 	   try {
-	   		stf.write(sym+" "+(new String(lcs))+" "+(new String(len))+" "+(new String(RL))+"\n");
+	   		stf.write((new String(sym))+" "+(new String(lcs))+" "+(new String(len))+" "+(new String(RL))+"\n");
    		} catch(Exception e) {
 			System.out.println("Couldn't write to file");
 		}
@@ -195,7 +195,7 @@ public class Assembler1 {
 	public static void LITASS() {
 		try {
 			BufferedWriter ltf2;
-			String sym;
+			char [] sym = new char[20];
 			char [] val = new char[20];
 			char [] len = new char[10];
 			char [] RL = new char[3];
@@ -205,22 +205,22 @@ public class Assembler1 {
 			LLC=LITORGINIT;
 			System.out.println("\n\n"+LITORGINIT);
 			String ltf0str = ltf0.readLine();
-			StringTokenizer input = new StringTokenizer(ltf0str);
-			while(input.countTokens()>=4 && ltf0str.length()>0) {
-	    		sym=input.nextToken();
-				System.out.println("here bitch "+sym);
+			StringTokenizer input;
+			while(ltf0str.length()>0) {
+				input = new StringTokenizer(ltf0str);
+	    		sym=input.nextToken().toCharArray();
 	    		val=input.nextToken().toCharArray();
 	    		len=input.nextToken().toCharArray();
 				RL=input.nextToken().toCharArray();
 				LLC=LLC+4;
-				ltf2.write(sym+" "+LLC+" 4 R\n");
-				input = new StringTokenizer(ltf0str);
+				ltf2.write((new String(sym))+" "+LLC+" 4 R\n");
 				ltf0str = ltf0.readLine();
+				System.out.println(ltf0str.length());
 			}
 			ltf2.close();
 			ltf0.close();
 		} catch(Exception e) {
-			System.out.println("File not found. "+e);
+			System.out.println("File not found. " +e);
 		}
 	}
 
@@ -251,8 +251,8 @@ public class Assembler1 {
 		}
 		StringTokenizer input = new StringTokenizer(fp.readLine());
 		while(input.countTokens()>=3) {
-    		sym=input.nextToken();
-    		nme=input.nextToken();
+    		sym=input.nextToken().toCharArray();
+    		nme=input.nextToken().toCharArray();
     		opd=input.nextToken().toCharArray();
     		LC=0;
     		equflag=0;
@@ -260,14 +260,14 @@ public class Assembler1 {
     		MOTGET();
     		LTSTO();
     		//check for symbol
-    		if(sym.equals("-")) {
+    		if(!(new String(sym)).equals("-")) {
     			STSTO();
     		}
     		// LTORG
-    		if(nme.equals("LTORG")) {
+    		if((new String(nme)).equals("LTORG")) {
     			LTORG();
     		}
-    		System.out.println(sym+" "+nme+" "+(new String(opd))+" "+LC);
+    		System.out.println((new String(sym))+" "+(new String(nme))+" "+(new String(opd))+" "+LC);
     		LC+=L;
 			input=new StringTokenizer(fp.readLine());
 		}
