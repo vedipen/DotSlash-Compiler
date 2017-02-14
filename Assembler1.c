@@ -1,11 +1,4 @@
-/*
-PASS ONE ASSEMBLER BASED ON IBM 360
-				According to BOOK : - System Programming By JOHN J.DONOVAN 
-				page 74
-		@achute SMIT sec-A 5th sem CSE
-*/
 #include <stdio.h>
-#include <conio.h>
 #include <string.h>
 #include <stdlib.h>
 FILE *ltf,*stf;
@@ -24,7 +17,6 @@ void LTORG();					// Process LTORG
 void main(){
 	FILE *fp;
 	LC =0;
-	clrscr();
 	fp=fopen("ACHUTE\\SP\\ibm.txt","rt");
 	ltf= fopen("ACHUTE\\SP\\lt1.txt","wt");
 	stf= fopen("ACHUTE\\SP\\st.txt","wt");
@@ -43,7 +35,7 @@ void main(){
 		if(strcmp(nme,"LTORG")==0){
 			LTORG();
 		}
-		
+
 	printf("%s %s %s %d \n",sym,nme,opd,LC);
 
 	LC = LC + L;
@@ -51,11 +43,10 @@ void main(){
 	fclose(stf);
 	fclose(ltf);
 	fclose(fp);
-	// at the end ASSIGN LITERALS 
+	// at the end ASSIGN LITERALS
 	if(LITORGINIT>0)
 		LITASS();
 
-	getch();
 
 }
 void POTGET1(){
@@ -194,13 +185,13 @@ void LTSTO(){
 	ch[j]='\0';
 	strcpy(len,"4");
    	strcpy(RL,"R");
-   	printf("%s\n",ch );			
-   	LTCOUNT++;	
+   	printf("%s\n",ch );
+   	LTCOUNT++;
 	fprintf(ltf,"%s %d 4 R \n",ch,LC);
 	}
 }
 void STSTO(){
-	  
+
 	 // if EQU has been used
 	int length=1;
 	char len[10];
@@ -248,7 +239,7 @@ void LTORG()
 	}while(LCC%4!=0);
 	//printf("FOund LCC %d \n",LCC);
 	LC=LCC;
-	LITORGINIT = LCC; 
+	LITORGINIT = LCC;
 	LC=LC + 4 * LTCOUNT;
 	LCC=LC+1;
 	do{
