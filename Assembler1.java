@@ -4,7 +4,7 @@ import java.io.*;
 public class Assembler1 {
 	public static BufferedReader fp;
 	public static BufferedReader ltf0;
-   	public static BufferedWriter ltf;
+ 	public static BufferedWriter ltf;
 	public static BufferedWriter stf;
 	public static int LC=0;
 	public static int L=0;
@@ -21,7 +21,7 @@ public class Assembler1 {
     	char ch;
     	char[] form = new char[4];
     	char[] value = new char[100];
-    	if(nme.equals("DC")) {
+    	if((new String(nme)).equals("DC")) {
 			// various senarios :
 			// DC <FORMAT> ' <NUMBERS> '
     		i=0;
@@ -57,7 +57,7 @@ public class Assembler1 {
     		L=DLENGTH;
     	}
 		int opdlen=opd.length;
-    	if(nme.equals("DS")){
+    	if((new String (nme)).equals("DS")){
     		i=0;
 			count=0;
     		do {
@@ -87,17 +87,17 @@ public class Assembler1 {
     		DLENGTH=Integer.parseInt(valstr.trim())*DLENGTH;
     		L=DLENGTH;
     	}
-    	if(nme.equals("EQU")) {
+    	if((new String(nme)).equals("EQU")) {
     			// handle in STSTO --> EQU ALSO .. STSTO();
     		equflag=1;
     	}
-    	if(nme.equals("USING")) {
+    	if((new String(nme)).equals("USING")) {
     			// ignore
     	}
-    	if(nme.equals("DROP")) {
+    	if((new String(nme)).equals("DROP")) {
     			//ignore
     	}
-    	if(nme.equals("END")) {
+    	if((new String(nme)).equals("END")) {
     		// assign Literals First
     		// Handled in LITASS
     	}
@@ -119,7 +119,7 @@ public class Assembler1 {
 	    		mhex=input.nextToken().toCharArray();
 				mif=input.nextToken().toCharArray();
 				mlen=input.nextToken();
-				if(nme.equals(mnme)) {
+				if((new String(nme)).equals(mnme)) {
 					L = Integer.parseInt(mlen);
 				}
 			}
@@ -159,7 +159,7 @@ public class Assembler1 {
 			System.out.println(ch);
 		   	LTCOUNT++;
 			try {
-				ltf.write(ch+" "+LC+" "+"4 R\n");
+				ltf.write((new String(ch))+" "+LC+" "+"4 R\n");
 			} catch(Exception e) {
 				System.out.println("Couldn't write to file.");
 			}
@@ -174,10 +174,10 @@ public class Assembler1 {
 	   char [] lcs = new char[10];
 	   lcs=(LC+"").toCharArray();
 	   RL="R".toCharArray();
-	   if(nme.equals("DC") || nme.equals("DS")) {
+	   if((new String(nme)).equals("DC") || (new String(nme)).equals("DS")) {
 	   		length=4;
 	   }
-	   if(nme.equals("EQU")){
+	   if((new String(nme)).equals("EQU")){
 		   length=1;
 		   if(opd[0]!='*') {
 			   RL="A".toCharArray();
@@ -206,7 +206,7 @@ public class Assembler1 {
 			System.out.println("\n\n"+LITORGINIT);
 			String ltf0str = ltf0.readLine();
 			StringTokenizer input;
-			while(ltf0str.length()>0) {
+			while(ltf0str.trim().length()>0) {
 				input = new StringTokenizer(ltf0str);
 	    		sym=input.nextToken().toCharArray();
 	    		val=input.nextToken().toCharArray();
@@ -244,7 +244,7 @@ public class Assembler1 {
 	public static void main(String args[]) throws Exception {
 		try {
 			fp = new BufferedReader(new FileReader("extras/input1.asm"));
-			ltf = new BufferedWriter(new FileWriter("extras/lt.txt"));
+			ltf = new BufferedWriter(new FileWriter("extras/lt1.txt"));
 			stf = new BufferedWriter(new FileWriter("extras/st.txt"));
 		} catch (Exception e) {
 			System.out.println("File not found.");
@@ -259,18 +259,20 @@ public class Assembler1 {
     		POTGET1();
     		MOTGET();
     		LTSTO();
-    		//check for symbol
+				//check for symbol
     		if(!(new String(sym)).equals("-")) {
     			STSTO();
     		}
     		// LTORG
-    		if((new String(nme)).equals("LTORG")) {
+				if((new String(nme)).equals("LTORG")) {
     			LTORG();
     		}
+				System.out.println("sym is "+(new String(sym)));
     		System.out.println((new String(sym))+" "+(new String(nme))+" "+(new String(opd))+" "+LC);
     		LC+=L;
-			input=new StringTokenizer(fp.readLine());
+				input=new StringTokenizer(fp.readLine());
 		}
+		ltf.write("  ");
 		stf.close();
 		ltf.close();
 		fp.close();
