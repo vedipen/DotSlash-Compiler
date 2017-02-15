@@ -243,18 +243,24 @@ public class Assembler1 {
 
 	public static void main(String args[]) throws Exception {
 		try {
-			fp = new BufferedReader(new FileReader("extras/input1.asm"));
+			fp = new BufferedReader(new FileReader("extras/input.asm"));
 			ltf = new BufferedWriter(new FileWriter("extras/lt1.txt"));
 			stf = new BufferedWriter(new FileWriter("extras/st.txt"));
 		} catch (Exception e) {
 			System.out.println("File not found.");
 		}
 		StringTokenizer input = new StringTokenizer(fp.readLine());
-		while(input.countTokens()>=3) {
-    		sym=input.nextToken().toCharArray();
+		while(input.countTokens()>=1) {
+				if(input.countTokens()<=2) {
+					sym="-".toCharArray();
+				} else {
+    			sym=input.nextToken().toCharArray();
+				}
     		nme=input.nextToken().toCharArray();
-    		opd=input.nextToken().toCharArray();
-    		LC=0;
+				if(input.hasMoreTokens()) {
+    			opd=input.nextToken().toCharArray();
+				}
+				LC=0;
     		equflag=0;
     		POTGET1();
     		MOTGET();
