@@ -25,18 +25,22 @@ public class Assembler1 {
 			// various senarios :
 			// DC <FORMAT> ' <NUMBERS> '
     		i=0;
+				int j1=0;
     		comma=1;
     		count=0;
 			int opdlen = opd.length;
 			int formflag=0;
 			do {
     			ch=opd[i];
-				if(count==0) {
+				if(count==1) {
     				//add to format
-    				form[i]=opd[i];
+    				form[j1]=opd[i];
+						j1++;
+						count++;
 				}
-    			if(count==1 && formflag==0) {
-    				form[i]='\0';
+    			if(count==2 && formflag==0) {
+    				form[j1]='\0';
+						j1++;
 					formflag=1;
 				}
     			if(ch=='\'') {
@@ -44,14 +48,13 @@ public class Assembler1 {
 				}
     			if(ch==',')
     				comma++;
-    			i++;
-				System.out.println(i);
+				i++;
     		} while(count!=2 && (ch!='\0' && i<opdlen));
-            if(form.equals("F"))
+            if((new String(form)).trim().equals("F"))
     			DLENGTH=4;
-    		if(form.equals("HF"))
+    		if((new String(form)).trim().equals("HF"))
     			DLENGTH=2;
-    		if(form.equals("C"))
+    		if((new String(form)).trim().equals("C"))
     			DLENGTH=1;
     		DLENGTH=DLENGTH*comma;
     		L=DLENGTH;
@@ -122,6 +125,7 @@ public class Assembler1 {
 				if((new String(nme)).equals(mnme)) {
 					L = Integer.parseInt(mlen);
 				}
+				input = new StringTokenizer(mfp.readLine());
 			}
 			mfp.close();
 		} catch(Exception e) {
@@ -156,7 +160,7 @@ public class Assembler1 {
 			ch[j]='\0';
 			len="4".toCharArray();
 		   	RL="R".toCharArray();
-			System.out.println(ch);
+			System.out.println(new String(ch));
 		   	LTCOUNT++;
 			try {
 				ltf.write((new String(ch))+" "+LC+" "+"4 R\n");
@@ -215,7 +219,6 @@ public class Assembler1 {
 				LLC=LLC+4;
 				ltf2.write((new String(sym))+" "+LLC+" 4 R\n");
 				ltf0str = ltf0.readLine();
-				System.out.println(ltf0str.length());
 			}
 			ltf2.close();
 			ltf0.close();
@@ -260,11 +263,11 @@ public class Assembler1 {
 				if(input.hasMoreTokens()) {
     			opd=input.nextToken().toCharArray();
 				}
-				LC=0;
+				L=0;
     		equflag=0;
     		POTGET1();
     		MOTGET();
-    		LTSTO();
+				LTSTO();
 				//check for symbol
     		if(!(new String(sym)).equals("-")) {
     			STSTO();
@@ -273,9 +276,8 @@ public class Assembler1 {
 				if((new String(nme)).equals("LTORG")) {
     			LTORG();
     		}
-				System.out.println("sym is "+(new String(sym)));
     		System.out.println((new String(sym))+" "+(new String(nme))+" "+(new String(opd))+" "+LC);
-    		LC+=L;
+    		LC=LC+L;
 				input=new StringTokenizer(fp.readLine());
 		}
 		ltf.write("  ");
