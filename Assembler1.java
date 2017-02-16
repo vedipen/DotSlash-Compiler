@@ -32,25 +32,22 @@ public class Assembler1 {
 			int formflag=0;
 			do {
     			ch=opd[i];
-				if(count==1) {
+				if(count==0) {
     				//add to format
     				form[j1]=opd[i];
 						j1++;
 						count++;
 				}
-    			if(count==2 && formflag==0) {
     				form[j1]='\0';
-						j1++;
-					formflag=1;
-				}
-    			if(ch=='\'') {
+				char ch9='\'';
+					if(((ch+"").trim().equals("’"))) {
     				count++;
 				}
     			if(ch==',')
     				comma++;
 				i++;
     		} while(count!=2 && (ch!='\0' && i<opdlen));
-            if((new String(form)).trim().equals("F"))
+				    if((new String(form)).trim().equals("F"))
     			DLENGTH=4;
     		if((new String(form)).trim().equals("HF"))
     			DLENGTH=2;
@@ -125,7 +122,11 @@ public class Assembler1 {
 				if((new String(nme)).equals(mnme)) {
 					L = Integer.parseInt(mlen);
 				}
-				input = new StringTokenizer(mfp.readLine());
+				try {
+					input = new StringTokenizer(mfp.readLine());
+				} catch (Exception e) {
+					break;
+				}
 			}
 			mfp.close();
 		} catch(Exception e) {
@@ -152,10 +153,13 @@ public class Assembler1 {
 		if(flag==1) {
 			j=0;
 			i++;
-	   		while(opd[i]!='\0' && i<opdlen-1) {
+	   		while(opd[i]!='\0' && i<=opdlen-1) {
 				ch[j]=opd[i];
 	   			j++;
 	   			i++;
+					if(i>opdlen-1) {
+						break;
+					}
 	   		}
 			ch[j]='\0';
 			len="4".toCharArray();
@@ -231,16 +235,12 @@ public class Assembler1 {
 		//find next higher multiple of 4
 		int LCC;
 		LCC=LC+1;
-		do {
-			LCC++;
-		}while(LCC%4!=0);
-		LC=LCC;
 		LITORGINIT = LCC;
 		LC=LC + 4 * LTCOUNT;
-		LCC=LC+1;
-		do{
+		LCC=LC;
+		while(LCC%4!=0) {
 			LCC ++;
-		} while(LCC%4!=0);
+		}
 		LC=LCC;
 	}
 
@@ -266,7 +266,7 @@ public class Assembler1 {
 				L=0;
     		equflag=0;
     		POTGET1();
-    		MOTGET();
+				MOTGET();
 				LTSTO();
 				//check for symbol
     		if(!(new String(sym)).equals("-")) {
@@ -276,9 +276,13 @@ public class Assembler1 {
 				if((new String(nme)).equals("LTORG")) {
     			LTORG();
     		}
-    		System.out.println((new String(sym))+" "+(new String(nme))+" "+(new String(opd))+" "+LC);
-    		LC=LC+L;
-				input=new StringTokenizer(fp.readLine());
+				LC=LC+L;
+				System.out.println((new String(sym))+" "+(new String(nme))+" "+(new String(opd))+" "+LC);
+    		try {
+					input=new StringTokenizer(fp.readLine());
+				} catch (Exception e) {
+					break;
+				}
 		}
 		ltf.write("  ");
 		stf.close();
