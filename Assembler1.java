@@ -200,17 +200,17 @@ public class Assembler1 {
 		}
 	}
 
-	public static String opdid(String s) {
-		try {
+	public static String opdid(String s) throws IOException {
+		// try {
 		BufferedReader brst = new BufferedReader(new FileReader("extras/st.txt"));
 		BufferedReader brlt = new BufferedReader(new FileReader("extras/lt.txt"));
 		String inputst = brst.readLine();
 		String inputlt = brlt.readLine();
 		int idst=1;
 		while(inputst!=null) {
-			StringTokenizer inputToken = new StringTokenizer(inputlt);
+			StringTokenizer inputToken = new StringTokenizer(inputst);
 			String labelid = inputToken.nextToken();
-			if(s.equals(labelid)) {
+			if(s.equals(labelid.trim())) {
 				return ("ID#"+idst);
 			}
 			idst++;
@@ -218,18 +218,18 @@ public class Assembler1 {
 		}
 		int idlt=1;
 		while(inputlt!=null) {
-			StringTokenizer inputTokenL = new StringTokenizer(inputst);
+			StringTokenizer inputTokenL = new StringTokenizer(inputlt);
 			String labelidL = inputTokenL.nextToken();
-			if(s.equals(labelidL)) {
+			if(s.equals(labelidL.trim())) {
 				return ("LT#"+idlt);
 			}
 			idlt++;
-			inputlt=brst.readLine();
+			inputlt=brlt.readLine();
 		}
-	} catch (Exception e) {
-		System.out.println("Cant get ID");
-		return s;
-	}
+	// } catch (Exception e) {
+	// 	System.out.println("Cant get ID"+e);
+	// 	return s;
+	// }
 	return s;
 	}
 
@@ -286,6 +286,9 @@ public class Assembler1 {
 			System.out.println("File not found.");
 		}
 		StringTokenizer input = new StringTokenizer(fp.readLine());
+	 	Vector<String> save = new Vector<String>();
+	 	Vector<String> saveId = new Vector<String>();
+		Vector<String> saveLC = new Vector<String>();
 		while(input.countTokens()>=1) {
 			if(input.countTokens()<=2) {
 				sym="-".toCharArray();
@@ -321,12 +324,19 @@ public class Assembler1 {
 					break;
 				}
 			}
-			if(k1<opd.length-1) {
+			if(k1<opd.length-1 && k1>0) {
+				if(opd[k1+1]=='=') {
+					opdNo+=opd[k1+1];
+					k1++;
+				}
 				for(int k=k1+1;k<opd.length;k++) {
 					opdLabel+=opd[k];
 				}
 			}
-			System.out.println((new String(sym))+" "+(new String(nme))+" "+opdNo+(opdid(new String(opdLabel)))+" "+LC);
+			save.add((new String(sym))+" "+(new String(nme))+" "+opdNo);
+			saveId.add(opdLabel);
+			saveLC.add(" "+LC);
+			System.out.println((new String(sym))+" "+(new String(nme))+" "+opdNo+opdLabel+" "+LC);
 			try {
 				input=new StringTokenizer(fp.readLine());
 			} catch (Exception e) {
@@ -340,6 +350,10 @@ public class Assembler1 {
 		//Literals
 		if(LITORGINIT>0)	{
 			LITASS();
+		}
+		System.out.println("------------------INTERMEDIATE CODE By PASS 1----------------------------");
+		for(int x=0;x<save.size();x++) {
+			System.out.println(save.get(x)+opdid(saveId.get(x))+saveLC.get(x));
 		}
 	}
 }
