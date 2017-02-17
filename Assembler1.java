@@ -200,6 +200,38 @@ public class Assembler1 {
 		}
 	}
 
+	public static String opdid(String s) {
+		try {
+		BufferedReader brst = new BufferedReader(new FileReader("extras/st.txt"));
+		BufferedReader brlt = new BufferedReader(new FileReader("extras/lt.txt"));
+		String inputst = brst.readLine();
+		String inputlt = brlt.readLine();
+		int idst=1;
+		while(inputst.length()>0) {
+			StringTokenizer inputToken = new StringTokenizer(inputlt);
+			String labelid = inputToken.nextToken();
+			if(s.equals(labelid)) {
+				return ("ID#"+idst);
+			}
+			idst++;
+			inputst=brst.readLine();
+		}
+		int idlt=1;
+		while(inputlt.length()>0) {
+			StringTokenizer inputTokenL = new StringTokenizer(inputst);
+			String labelidL = inputTokenL.nextToken();
+			if(s.equals(labelidL)) {
+				return ("LT#"+idlt);
+			}
+			idlt++;
+			inputlt=brst.readLine();
+		}
+	} catch (Exception e) {
+		return s;
+	}
+	return s;
+	}
+
 	public static void LITASS() {
 		try {
 			BufferedWriter ltf2;
@@ -277,7 +309,7 @@ public class Assembler1 {
 				LTORG();
 			}
 			LC=LC+L;
-			System.out.println((new String(sym))+" "+(new String(nme))+" "+(new String(opd))+" "+LC);
+			System.out.println((new String(sym))+" "+(new String(nme))+" "+(opdid(new String(opd)))+" "+LC);
 			try {
 				input=new StringTokenizer(fp.readLine());
 			} catch (Exception e) {
