@@ -207,7 +207,7 @@ public class Assembler1 {
 		String inputst = brst.readLine();
 		String inputlt = brlt.readLine();
 		int idst=1;
-		while(inputst.length()>0) {
+		while(inputst!=null) {
 			StringTokenizer inputToken = new StringTokenizer(inputlt);
 			String labelid = inputToken.nextToken();
 			if(s.equals(labelid)) {
@@ -217,7 +217,7 @@ public class Assembler1 {
 			inputst=brst.readLine();
 		}
 		int idlt=1;
-		while(inputlt.length()>0) {
+		while(inputlt!=null) {
 			StringTokenizer inputTokenL = new StringTokenizer(inputst);
 			String labelidL = inputTokenL.nextToken();
 			if(s.equals(labelidL)) {
@@ -227,6 +227,7 @@ public class Assembler1 {
 			inputlt=brst.readLine();
 		}
 	} catch (Exception e) {
+		System.out.println("Cant get ID");
 		return s;
 	}
 	return s;
@@ -309,7 +310,23 @@ public class Assembler1 {
 				LTORG();
 			}
 			LC=LC+L;
-			System.out.println((new String(sym))+" "+(new String(nme))+" "+(opdid(new String(opd)))+" "+LC);
+			int k1=0;
+			String opdNo="",opdLabel="";
+			for(int k=0;k<opd.length;k++) {
+				if(opd[k]!=',') {
+					opdNo+=opd[k];
+				} else if(opd[k]==','){
+					opdNo+=opd[k];
+					k1=k;
+					break;
+				}
+			}
+			if(k1<opd.length-1) {
+				for(int k=k1+1;k<opd.length;k++) {
+					opdLabel+=opd[k];
+				}
+			}
+			System.out.println((new String(sym))+" "+(new String(nme))+" "+opdNo+(opdid(new String(opdLabel)))+" "+LC);
 			try {
 				input=new StringTokenizer(fp.readLine());
 			} catch (Exception e) {
