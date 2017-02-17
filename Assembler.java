@@ -1,7 +1,11 @@
+/*
+Author - @vedipen
+*/
+
 import java.util.*;
 import java.io.*;
 
-public class Assembler1 {
+public class Assembler {
 	public static BufferedReader fp;
 	public static BufferedReader ltf0;
 	public static BufferedWriter ltf;
@@ -15,6 +19,7 @@ public class Assembler1 {
 	public static char[] nme = new char[20];
 	public static char[] opd = new char[100];
 	public static void POTGET1() {
+		// Search pseudo op table
 		int i=0,count=0,comma=1;
 		int j=0,k=0;
 		int DLENGTH=0;
@@ -22,8 +27,7 @@ public class Assembler1 {
 		char[] form = new char[4];
 		char[] value = new char[100];
 		if((new String(nme)).equals("DC")) {
-			// various senarios :
-			// DC <FORMAT> ' <NUMBERS> '
+			// DC F'25,26,27'
 			i=0;
 			int j1=0;
 			comma=1;
@@ -33,7 +37,7 @@ public class Assembler1 {
 			do {
 				ch=opd[i];
 				if(count==0) {
-					//add to format
+					// Add to format
 					form[j1]=opd[i];
 					j1++;
 					count++;
@@ -47,12 +51,15 @@ public class Assembler1 {
 				comma++;
 				i++;
 			} while(count!=2 && (ch!='\0' && i<opdlen));
-			if((new String(form)).trim().equals("F"))
-			DLENGTH=4;
-			if((new String(form)).trim().equals("HF"))
-			DLENGTH=2;
-			if((new String(form)).trim().equals("C"))
-			DLENGTH=1;
+			if((new String(form)).trim().equals("F")) {
+				DLENGTH=4;
+			}
+			if((new String(form)).trim().equals("HF")) {
+				DLENGTH=2;
+			}
+			if((new String(form)).trim().equals("C")) {
+				DLENGTH=1;
+			}
 			DLENGTH=DLENGTH*comma;
 			L=DLENGTH;
 		}
@@ -88,24 +95,24 @@ public class Assembler1 {
 			L=DLENGTH;
 		}
 		if((new String(nme)).equals("EQU")) {
-			// handle in STSTO --> EQU ALSO .. STSTO();
+			// Handle in STSTO --> EQU ALSO .. STSTO();
 			equflag=1;
 		}
 		if((new String(nme)).equals("USING")) {
-			// ignore
+			// Ignore
 		}
 		if((new String(nme)).equals("DROP")) {
-			//ignore
+			// Ignore
 		}
 		if((new String(nme)).equals("END")) {
-			// assign Literals First
+			// Assign Literals First
 			// Handled in LITASS
 		}
 
 	}
 
 	public static void MOTGET() {
-		//search machine op code table
+		// Search Machine Opcode table
 		BufferedReader mfp;
 		String mnme;
 		char [] mhex = new char [3];
@@ -130,13 +137,13 @@ public class Assembler1 {
 			}
 			mfp.close();
 		} catch(Exception e) {
-			System.out.println("File mot.txt not found");
+			System.out.println("File mot.txt not found "+e);
 		}
 	}
 
 	public static void LTSTO() {
-		//processing literals table
-		// eg l database,=a(data)
+		// Processing literals table
+		// Eg l database,=a(data)
 		char [] len = new char[20];
 		char [] ch = new char[20];
 		char [] RL = new char[10];
@@ -164,18 +171,18 @@ public class Assembler1 {
 			ch[j]='\0';
 			len="4".toCharArray();
 			RL="R".toCharArray();
-			System.out.println(new String(ch));
+			// System.out.println(new String(ch));
 			LTCOUNT++;
 			try {
 				ltf.write((new String(ch))+" "+LC+" "+"4 R\n");
 			} catch(Exception e) {
-				System.out.println("Couldn't write to file.");
+				System.out.println("Couldn't write to file "+e);
 			}
 		}
 	}
 
 	public static void STSTO() {
-		// if EQU has been used
+		// If EQU has been used
 		int length=1;
 		char [] len = new char[10];
 		char [] RL = new char[3];
@@ -196,41 +203,41 @@ public class Assembler1 {
 		try {
 			stf.write((new String(sym))+" "+(new String(lcs))+" "+(new String(len))+" "+(new String(RL))+"\n");
 		} catch(Exception e) {
-			System.out.println("Couldn't write to file");
+			System.out.println("Couldn't write to file "+e);
 		}
 	}
 
 	public static String opdid(String s) throws IOException {
-		// try {
-		BufferedReader brst = new BufferedReader(new FileReader("extras/st.txt"));
-		BufferedReader brlt = new BufferedReader(new FileReader("extras/lt.txt"));
-		String inputst = brst.readLine();
-		String inputlt = brlt.readLine();
-		int idst=1;
-		while(inputst!=null) {
-			StringTokenizer inputToken = new StringTokenizer(inputst);
-			String labelid = inputToken.nextToken();
-			if(s.equals(labelid.trim())) {
-				return ("ID#"+idst);
+		try {
+			BufferedReader brst = new BufferedReader(new FileReader("extras/st.txt"));
+			BufferedReader brlt = new BufferedReader(new FileReader("extras/lt.txt"));
+			String inputst = brst.readLine();
+			String inputlt = brlt.readLine();
+			int idst=1;
+			while(inputst!=null) {
+				StringTokenizer inputToken = new StringTokenizer(inputst);
+				String labelid = inputToken.nextToken();
+				if(s.equals(labelid.trim())) {
+					return ("ID#"+idst);
+				}
+				idst++;
+				inputst=brst.readLine();
 			}
-			idst++;
-			inputst=brst.readLine();
-		}
-		int idlt=1;
-		while(inputlt!=null) {
-			StringTokenizer inputTokenL = new StringTokenizer(inputlt);
-			String labelidL = inputTokenL.nextToken();
-			if(s.equals(labelidL.trim())) {
-				return ("LT#"+idlt);
+			int idlt=1;
+			while(inputlt!=null) {
+				StringTokenizer inputTokenL = new StringTokenizer(inputlt);
+				String labelidL = inputTokenL.nextToken();
+				if(s.equals(labelidL.trim())) {
+					return ("LT#"+idlt);
+				}
+				idlt++;
+				inputlt=brlt.readLine();
 			}
-			idlt++;
-			inputlt=brlt.readLine();
+		} catch (Exception e) {
+			System.out.println("Cant get ID "+e);
+			return s;
 		}
-	// } catch (Exception e) {
-	// 	System.out.println("Cant get ID"+e);
-	// 	return s;
-	// }
-	return s;
+		return s;
 	}
 
 	public static void LITASS() {
@@ -244,7 +251,8 @@ public class Assembler1 {
 			ltf0 = new BufferedReader(new FileReader("extras/lt1.txt"));
 			ltf2 = new BufferedWriter(new FileWriter("extras/lt.txt"));
 			LLC=LITORGINIT;
-			System.out.println("\n\n"+LITORGINIT);
+			// LC at first literal
+			// System.out.println("\n\n"+LITORGINIT);
 			String ltf0str = ltf0.readLine();
 			StringTokenizer input;
 			while(ltf0str.trim().length()>0) {
@@ -253,8 +261,8 @@ public class Assembler1 {
 				val=input.nextToken().toCharArray();
 				len=input.nextToken().toCharArray();
 				RL=input.nextToken().toCharArray();
-				LLC=LLC+4;
 				ltf2.write((new String(sym))+" "+LLC+" 4 R\n");
+				LLC=LLC+4;
 				ltf0str = ltf0.readLine();
 			}
 			ltf2.close();
@@ -268,7 +276,7 @@ public class Assembler1 {
 		//find next higher multiple of 4
 		int LCC;
 		LCC=LC+1;
-		LITORGINIT = LCC;
+		LITORGINIT = LC;
 		LC=LC + 4 * LTCOUNT;
 		LCC=LC;
 		while(LCC%4!=0) {
@@ -279,15 +287,15 @@ public class Assembler1 {
 
 	public static void main(String args[]) throws Exception {
 		try {
-			fp = new BufferedReader(new FileReader("extras/input.asm"));
+			fp = new BufferedReader(new FileReader("extras/input1.asm"));
 			ltf = new BufferedWriter(new FileWriter("extras/lt1.txt"));
 			stf = new BufferedWriter(new FileWriter("extras/st.txt"));
 		} catch (Exception e) {
-			System.out.println("File not found.");
+			System.out.println("File not found "+e);
 		}
 		StringTokenizer input = new StringTokenizer(fp.readLine());
-	 	Vector<String> save = new Vector<String>();
-	 	Vector<String> saveId = new Vector<String>();
+		Vector<String> save = new Vector<String>();
+		Vector<String> saveId = new Vector<String>();
 		Vector<String> saveLC = new Vector<String>();
 		while(input.countTokens()>=1) {
 			if(input.countTokens()<=2) {
@@ -304,7 +312,7 @@ public class Assembler1 {
 			POTGET1();
 			MOTGET();
 			LTSTO();
-			//check for symbol
+			// Check for symbol
 			if(!(new String(sym)).equals("-")) {
 				STSTO();
 			}
@@ -312,7 +320,6 @@ public class Assembler1 {
 			if((new String(nme)).equals("LTORG")) {
 				LTORG();
 			}
-			LC=LC+L;
 			int k1=0;
 			String opdNo="",opdLabel="";
 			for(int k=0;k<opd.length;k++) {
@@ -336,7 +343,9 @@ public class Assembler1 {
 			save.add((new String(sym))+" "+(new String(nme))+" "+opdNo);
 			saveId.add(opdLabel);
 			saveLC.add(" "+LC);
-			System.out.println((new String(sym))+" "+(new String(nme))+" "+opdNo+opdLabel+" "+LC);
+			// Print code with LC
+			// System.out.println((new String(sym))+" "+(new String(nme))+" "+opdNo+opdLabel+" "+LC);
+			LC=LC+L;
 			try {
 				input=new StringTokenizer(fp.readLine());
 			} catch (Exception e) {
@@ -351,9 +360,22 @@ public class Assembler1 {
 		if(LITORGINIT>0)	{
 			LITASS();
 		}
-		System.out.println("------------------INTERMEDIATE CODE By PASS 1----------------------------");
-		for(int x=0;x<save.size();x++) {
-			System.out.println(save.get(x)+opdid(saveId.get(x))+saveLC.get(x));
+		try {
+			BufferedWriter ic = new BufferedWriter(new FileWriter("extras/intermediate_pass1.txt"));
+			ic.write("------------------INTERMEDIATE CODE Generated By PASS 1---------------------\n\n");
+			for(int x=0;x<save.size();x++) {
+				ic.write(saveLC.get(x)+" "+save.get(x)+opdid(saveId.get(x))+"\n");
+			}
+			ic.close();
+		} catch(Exception e) {
+			System.out.println("Couldn't write intermediate table "+e);
 		}
+		//For Reference
+		System.out.println("\nPass 1\n");
+		System.out.println("Input code for IBM 360 Assembler used is in extras/input1.asm");
+		System.out.println("Input Machine Opcode Table used is in extras/mot.txt\n");
+		System.out.println("Symbol Table is written in extras/st.txt");
+		System.out.println("Literal Table is written in extras/lt.txt");
+		System.out.println("Intermediate code is written in extras/intermediate_pass1.txt\n");
 	}
 }
