@@ -1,7 +1,7 @@
 # ./ Compiler
 My journey of learning Compiler Construction and developing my very own **./ Compiler**
 
-This is the Pass 1 of Two Pass Assembler IBM 360/370 architecture in Java 8    
+It contains both Pass 1 and Pass 2 of Two Pass Assembler IBM 360/370 architecture in Java 8    
 
 ### To Run
 ```
@@ -15,4 +15,6 @@ Input Machine Opcode Table used is in extras/mot.txt
 
 Symbol Table is written in extras/st.txt  
 Literal Table is written in extras/lt.txt  
-Intermediate code is written in extras/intermediate_pass1.txt  </pre>
+Intermediate code of pass 1 is written in extras/intermediate_pass1.txt  
+
+Final Output of pass 2 is written in extras/pass2output.txt</pre>
