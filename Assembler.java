@@ -515,7 +515,7 @@ public class Assembler {
 
 		System.out.println("\nPass 2\n");
 		pass2();
-		System.out.println("Final Output of Pass 2 is written in extras/pass2output.txt\n");
-		System.out.println("Execution Completed.");
+		System.out.println("Final Output of Pass 2 is written in extras/pass2output.txt");
+		System.out.println("Execution Completed.\n");
 	}
 }
