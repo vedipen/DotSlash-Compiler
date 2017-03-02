@@ -285,6 +285,105 @@ public class Assembler {
 		LC=LCC;
 	}
 
+	public static void pass2() {
+		BufferedReader inter;
+		BufferedWriter pass2output;
+		try {
+			inter = new BufferedReader(new FileReader("extras/intermediate_pass1.txt"));
+			pass2output = new BufferedWriter(new FileWriter("extras/pass2output.txt"));
+			pass2output.write("---Final Output by Pass 2---\n\n");
+			String trash = inter.readLine();
+			trash = inter.readLine();
+			String input = inter.readLine();
+			String startRegister="";
+			String baseRegister="";
+			while(!input.contains("END")) {
+				if(input.contains("START")) {
+					pass2output.write(input+"\n");
+					StringTokenizer start = new StringTokenizer(input);
+					trash=start.nextToken();	//LC
+					trash=start.nextToken();	//Label
+					trash=start.nextToken();	//start
+					startRegister=start.nextToken();
+				} else if(input.contains("USING")) {
+					pass2output.write(input+"\n");
+					StringTokenizer base = new StringTokenizer(input);
+					trash=base.nextToken();	//LC
+					trash=base.nextToken();	//"-"
+					trash=base.nextToken();	//using
+					baseRegister=base.nextToken().replaceAll("*,","");
+				} else if(input.contains("#")) {
+					StringTokenizer in = new StringTokenizer(input);
+					String out = in.nextToken(); //LC
+					out+=" ";
+					out += in.nextToken(); //"-"
+					out+=" ";
+
+					//For RR or RX?
+					String smot = in.nextToken(); //mot
+					out+=smot;
+					out+=" ";
+					BufferedReader motRead = new BufferedReader(new FileReader("extras/mot.txt"));
+					trash=motRead.readLine(); //heading
+					StringTokenizer searchMot = new StringTokenizer(motRead.readLine());
+					while(searchMot.hasMoreTokens()) {
+						if(searchMot.nextToken().equals(smot)) {	//MNE
+							trash=searchMot.nextToken();	//HEX
+							String rrrx = searchMot.nextToken();
+							if(rrrx.equals("RR")) {
+								System.out.println("Found RR");
+							} else if(rrrx.equals("RX")) {
+
+							}
+						}
+						searchMot = new StringTokenizer(motRead.readLine());
+					}
+
+					//For Symbol Table || Literal Table
+					StringTokenizer last = new StringTokenizer(in.nextToken().toString(),",");
+					out+=last.nextToken();
+					out+=",";
+					String lastSeg=last.nextToken();
+					if(lastSeg.contains("ID#")) {
+						int cnt = Integer.parseInt(lastSeg.replaceAll("ID#","").trim());
+						BufferedReader stID = new BufferedReader(new FileReader("extras/st.txt"));
+						 cnt--;
+						 while(cnt>0) {
+							 trash=stID.readLine();
+						 }
+						 StringTokenizer lcID = new StringTokenizer(stID.readLine());
+						 trash=lcID.nextToken();	//Label
+						 out+=lcID.nextToken();
+					} else if(lastSeg.contains("LT#")) {
+						int cnt = Integer.parseInt(lastSeg.replaceAll("LT#","").trim());
+						BufferedReader ltID = new BufferedReader(new FileReader("extras/lt.txt"));
+						 cnt--;
+						 while(cnt>0) {
+							 trash=ltID.readLine();
+						 }
+						 StringTokenizer lcID = new StringTokenizer(ltID.readLine());
+						 trash=lcID.nextToken();	//Label
+						 out+=lcID.nextToken();
+					}
+					out+=",("+startRegister+","+baseRegister+")";
+					pass2output.write(out+"\n");
+				} else if(input.contains("DC")) {
+
+				} else if(input.contains("DS")) {
+
+				} else if(input.contains("BNE")) {
+
+				} else {
+					pass2output.write(input+"\n");
+				}
+				input=inter.readLine();
+			}
+			pass2output.close();
+		} catch (Exception e) {
+			System.out.println("File not found by Pass 2 "+e);
+		}
+	}
+
 	public static void main(String args[]) throws Exception {
 		try {
 			fp = new BufferedReader(new FileReader("extras/input1.asm"));
@@ -377,5 +476,6 @@ public class Assembler {
 		System.out.println("Symbol Table is written in extras/st.txt");
 		System.out.println("Literal Table is written in extras/lt.txt");
 		System.out.println("Intermediate code is written in extras/intermediate_pass1.txt\n");
+		pass2();
 	}
 }
