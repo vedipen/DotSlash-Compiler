@@ -291,7 +291,7 @@ public class Assembler {
 		try {
 			inter = new BufferedReader(new FileReader("extras/intermediate_pass1.txt"));
 			pass2output = new BufferedWriter(new FileWriter("extras/pass2output.txt"));
-			pass2output.write("--- Final Output by Pass 2--- \n\n");
+			pass2output.write("--- Final Output of Pass 2--- \n\n");
 			String trash = inter.readLine();
 			trash = inter.readLine();
 			String input = inter.readLine();
@@ -354,7 +354,7 @@ public class Assembler {
 						lastSeg=last.nextToken();
 					} else {
 						lastSeg = lSegm.trim();
-						System.out.println(lastSeg);
+						// System.out.println(lastSeg);
 					}
 					if(lastSeg.contains("ID#")) {
 						int cnt = Integer.parseInt(lastSeg.replaceAll("ID#","").trim());
@@ -512,6 +512,10 @@ public class Assembler {
 		System.out.println("Symbol Table is written in extras/st.txt");
 		System.out.println("Literal Table is written in extras/lt.txt");
 		System.out.println("Intermediate code is written in extras/intermediate_pass1.txt\n");
+
+		System.out.println("\nPass 2\n");
 		pass2();
+		System.out.println("Final Output of Pass 2 is written in extras/pass2output.txt\n");
+		System.out.println("Execution Completed.");
 	}
 }
