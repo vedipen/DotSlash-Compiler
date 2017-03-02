@@ -291,65 +291,78 @@ public class Assembler {
 		try {
 			inter = new BufferedReader(new FileReader("extras/intermediate_pass1.txt"));
 			pass2output = new BufferedWriter(new FileWriter("extras/pass2output.txt"));
-			pass2output.write("---Final Output by Pass 2---\n\n");
+			pass2output.write("--- Final Output by Pass 2--- \n\n");
 			String trash = inter.readLine();
 			trash = inter.readLine();
 			String input = inter.readLine();
 			String startRegister="";
 			String baseRegister="";
 			while(!input.contains("END")) {
+				boolean rr = false;
 				if(input.contains("START")) {
-					pass2output.write(input+"\n");
+					// pass2output.write(input+"\n");
 					StringTokenizer start = new StringTokenizer(input);
 					trash=start.nextToken();	//LC
 					trash=start.nextToken();	//Label
 					trash=start.nextToken();	//start
 					startRegister=start.nextToken();
 				} else if(input.contains("USING")) {
-					pass2output.write(input+"\n");
+					// pass2output.write(input+"\n");
 					StringTokenizer base = new StringTokenizer(input);
 					trash=base.nextToken();	//LC
 					trash=base.nextToken();	//"-"
 					trash=base.nextToken();	//using
-					baseRegister=base.nextToken().replaceAll("*,","");
-				} else if(input.contains("#")) {
+					baseRegister=base.nextToken().replaceAll("\\*,","");
+				}  else if(input.contains("#")) {
 					StringTokenizer in = new StringTokenizer(input);
-					String out = in.nextToken(); //LC
+					String out = " "+in.nextToken(); //LC
 					out+=" ";
 					out += in.nextToken(); //"-"
 					out+=" ";
 
 					//For RR or RX?
-					String smot = in.nextToken(); //mot
-					out+=smot;
-					out+=" ";
-					BufferedReader motRead = new BufferedReader(new FileReader("extras/mot.txt"));
-					trash=motRead.readLine(); //heading
-					StringTokenizer searchMot = new StringTokenizer(motRead.readLine());
-					while(searchMot.hasMoreTokens()) {
-						if(searchMot.nextToken().equals(smot)) {	//MNE
-							trash=searchMot.nextToken();	//HEX
-							String rrrx = searchMot.nextToken();
-							if(rrrx.equals("RR")) {
-								System.out.println("Found RR");
-							} else if(rrrx.equals("RX")) {
-
+					if(!input.contains("BNE")) {
+	 					String smot = in.nextToken(); //mot
+						out+=smot;
+						out+=" ";
+						BufferedReader motRead = new BufferedReader(new FileReader("extras/mot.txt"));
+						trash=motRead.readLine(); //heading
+						StringTokenizer searchMot = new StringTokenizer(motRead.readLine());
+						while(searchMot.hasMoreTokens()) {
+							if(searchMot.nextToken().equals(smot)) {	//MNE
+								trash=searchMot.nextToken();	//HEX
+								String rrrx = searchMot.nextToken();
+								if(rrrx.equals("RR")) {
+									rr=true;
+								} else if(rrrx.equals("RX")) {
+									rr=false;
+								}
 							}
+							searchMot = new StringTokenizer(motRead.readLine());
 						}
-						searchMot = new StringTokenizer(motRead.readLine());
+					} else {
+						trash=in.nextToken();
+						out+="BC 7,";
 					}
-
 					//For Symbol Table || Literal Table
-					StringTokenizer last = new StringTokenizer(in.nextToken().toString(),",");
-					out+=last.nextToken();
-					out+=",";
-					String lastSeg=last.nextToken();
+					String lSegm = in.nextToken();
+					String lastSeg="";
+					if(lSegm.contains(",")) {
+						StringTokenizer last = new StringTokenizer(lSegm.toString(),",");
+						out+=last.nextToken();
+						out+=",";
+						lastSeg=last.nextToken();
+					} else {
+						lastSeg = lSegm.trim();
+						System.out.println(lastSeg);
+					}
 					if(lastSeg.contains("ID#")) {
 						int cnt = Integer.parseInt(lastSeg.replaceAll("ID#","").trim());
 						BufferedReader stID = new BufferedReader(new FileReader("extras/st.txt"));
 						 cnt--;
 						 while(cnt>0) {
 							 trash=stID.readLine();
+							 cnt--;
 						 }
 						 StringTokenizer lcID = new StringTokenizer(stID.readLine());
 						 trash=lcID.nextToken();	//Label
@@ -360,24 +373,34 @@ public class Assembler {
 						 cnt--;
 						 while(cnt>0) {
 							 trash=ltID.readLine();
+							 cnt--;
 						 }
 						 StringTokenizer lcID = new StringTokenizer(ltID.readLine());
 						 trash=lcID.nextToken();	//Label
 						 out+=lcID.nextToken();
 					}
-					out+=",("+startRegister+","+baseRegister+")";
-					pass2output.write(out+"\n");
-				} else if(input.contains("DC")) {
-
-				} else if(input.contains("DS")) {
-
-				} else if(input.contains("BNE")) {
-
+					if(!rr) {
+						out+="("+startRegister+","+baseRegister+")";
+					}	pass2output.write(out+"\n");
+				}	else if(input.contains("DC") || input.contains("DS")) {
+					StringTokenizer dc = new StringTokenizer(input);
+					String outdc=" ";
+					outdc+=dc.nextToken();	//ID
+					outdc+=" ";
+					outdc+=dc.nextToken();	//Label
+					outdc+=" ";
+					trash=dc.nextToken();	//DC || DS
+					outdc+=dc.nextToken();	//F'XY'
+					pass2output.write(outdc+"\n");
 				} else {
-					pass2output.write(input+"\n");
+					if(input.contains("-")) {
+						pass2output.write(input+"\n");
+					}
 				}
 				input=inter.readLine();
 			}
+			StringTokenizer end = new StringTokenizer(input);
+			pass2output.write(" "+end.nextToken()+" "+end.nextToken()+" "+end.nextToken()+"\n");
 			pass2output.close();
 		} catch (Exception e) {
 			System.out.println("File not found by Pass 2 "+e);
@@ -419,6 +442,9 @@ public class Assembler {
 			if((new String(nme)).equals("LTORG")) {
 				LTORG();
 			}
+			if((new String(nme)).equals("END")) {
+				LC+=40;
+			}
 			int k1=0;
 			String opdNo="",opdLabel="";
 			for(int k=0;k<opd.length;k++) {
@@ -439,9 +465,19 @@ public class Assembler {
 					opdLabel+=opd[k];
 				}
 			}
-			save.add((new String(sym))+" "+(new String(nme))+" "+opdNo);
-			saveId.add(opdLabel);
-			saveLC.add(" "+LC);
+			if(opdLabel.length()==0) {
+				if(opd.length>1) {
+					if((opd[1]>='a' && opd[1]<='z') || (opd[1]>='A' && opd[1]<='Z')) {
+						opdLabel=new String(opd).trim();
+						opdNo="";
+					}
+				}
+			}
+			if(!((new String(sym))+" "+(new String(nme))+" "+opdNo).contains("LTORG")) {
+				save.add((new String(sym))+" "+(new String(nme))+" "+opdNo);
+				saveId.add(opdLabel);
+				saveLC.add(" "+LC);
+			}
 			// Print code with LC
 			// System.out.println((new String(sym))+" "+(new String(nme))+" "+opdNo+opdLabel+" "+LC);
 			LC=LC+L;
