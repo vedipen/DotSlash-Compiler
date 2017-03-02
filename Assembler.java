@@ -333,7 +333,7 @@ public class Assembler {
 			}
 			if(k1<opd.length-1 && k1>0) {
 				if(opd[k1+1]=='=') {
-					opdNo+=opd[k1+1];
+					// opdNo+=opd[k1+1];  //for '=' sign
 					k1++;
 				}
 				for(int k=k1+1;k<opd.length;k++) {
