@@ -1,7 +1,7 @@
 # ./ Compiler
 My journey of learning Compiler Construction and developing my very own **./ Compiler**
 
-It contains both Pass 1 and Pass 2 of Two Pass Assembler IBM 360/370 architecture in Java 8    
+This branch contains both Pass 1 and Pass 2 of Two Pass Assembler IBM 360/370 architecture in Java 8    
 
 ### To Run
 ```
